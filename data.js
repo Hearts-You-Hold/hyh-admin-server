@@ -1,9 +1,9 @@
 //----BOILER PLATE -- CONNECTING TO MONGO DATABASE ---//
 require("dotenv").config();
-let mongoURI = process.env.mongoURI
+let MONGO_URI = process.env.MONGO_URI
 const mongoose = require('mongoose')
 
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
 
