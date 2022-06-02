@@ -25,25 +25,25 @@ const Request = mongoose.model("RequestItem", requestSchema);
 
 
 
-const publicKey = `-----BEGIN PUBLIC KEY-----
-MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA4OTh4QOlhw/qa1xbZiz+
-mEJr7mGOxkpBwYzv6BkKHrw+fYx0y+95UV9AcvblMEsQZEv+9gyW0nxWTI2GUPw7
-Lzsu4+mdcCTLb7wubMOdYwLVpRjoS1Gsky/tJswxrV2D1565F8MIYuxw1ynFSBFM
-xoSJhVaTUtUbsV9QyUb7c4mk8inE0DzZmV59PPVWXBLtaE94/OBqR1Y2I2LBDmlH
-7L6II2ZUlFRtHEmyVakqlx3PSk+JreNhSDFfJECauDCvhDGI3eew4PSjcfb6SjzU
-e0TLdL4zjt6zZuAGT1M9K87q9/x9xj8Ik+2IVxWfv5nOuSjxLMmvxl/Le9kUDVew
-feluab67GIPyMaIvPs6QkRjNvWu3FajLi3tOPges19j+AsABVt/8RweEgvvvHmAK
-r5/fRpQosrBSKHB9YBr83zPS4NhacpFQC60FtDLEe3x9nUqzoM9/+i0Y2Gq/YcJZ
-fGLdheqBugDtLC/uYzpzMjjMBUKXr4Ec65h0wYT3yrwJg6cPRSRhssJ7ahb8HbHA
-sVcLHXGxYp+Hr8YLo7l27l53tOzGnkOxweY+IcImsf9A9FboSVUIOys/WP2bep3u
-WTeq9Cihk61xYDdF+prWSeuThwM+c0ljSEYrgBbRHUzG2qgxbkQVjnvyGexy/j9B
-QjH7q20RHQ21mrav02qc24MCAwEAAQ==
------END PUBLIC KEY-----`;
+// const publicKey = `-----BEGIN PUBLIC KEY-----
+// MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA4OTh4QOlhw/qa1xbZiz+
+// mEJr7mGOxkpBwYzv6BkKHrw+fYx0y+95UV9AcvblMEsQZEv+9gyW0nxWTI2GUPw7
+// Lzsu4+mdcCTLb7wubMOdYwLVpRjoS1Gsky/tJswxrV2D1565F8MIYuxw1ynFSBFM
+// xoSJhVaTUtUbsV9QyUb7c4mk8inE0DzZmV59PPVWXBLtaE94/OBqR1Y2I2LBDmlH
+// 7L6II2ZUlFRtHEmyVakqlx3PSk+JreNhSDFfJECauDCvhDGI3eew4PSjcfb6SjzU
+// e0TLdL4zjt6zZuAGT1M9K87q9/x9xj8Ik+2IVxWfv5nOuSjxLMmvxl/Le9kUDVew
+// feluab67GIPyMaIvPs6QkRjNvWu3FajLi3tOPges19j+AsABVt/8RweEgvvvHmAK
+// r5/fRpQosrBSKHB9YBr83zPS4NhacpFQC60FtDLEe3x9nUqzoM9/+i0Y2Gq/YcJZ
+// fGLdheqBugDtLC/uYzpzMjjMBUKXr4Ec65h0wYT3yrwJg6cPRSRhssJ7ahb8HbHA
+// sVcLHXGxYp+Hr8YLo7l27l53tOzGnkOxweY+IcImsf9A9FboSVUIOys/WP2bep3u
+// WTeq9Cihk61xYDdF+prWSeuThwM+c0ljSEYrgBbRHUzG2qgxbkQVjnvyGexy/j9B
+// QjH7q20RHQ21mrav02qc24MCAwEAAQ==
+// -----END PUBLIC KEY-----`;
 
-// Verify the token
-const verifiedPayload = jwt.verify(accessToken, publicKey, {
-  algorithms: ["RS256"],
-});
+// // Verify the token
+// const verifiedPayload = jwt.verify(accessToken, publicKey, {
+//   algorithms: ["RS256"],
+// });
 
 app.use(function authenticateToken(req, res, next) {
   // Read the JWT access token from the request header
