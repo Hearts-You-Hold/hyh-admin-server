@@ -45,7 +45,7 @@ const verifiedPayload = jwt.verify(accessToken, publicKey, {
   algorithms: ["RS256"],
 });
 
-function authenticateToken(req, res, next) {
+app.use(function authenticateToken(req, res, next) {
   // Read the JWT access token from the request header
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
@@ -57,7 +57,7 @@ function authenticateToken(req, res, next) {
     req.auth = auth;
     next();
   });
-}
+})
 
 //creating API route for the front end to access ALL NOT FUNDED entries from the database
 app.get("/", async (request, response) => {
