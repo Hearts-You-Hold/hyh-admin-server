@@ -60,7 +60,7 @@ function authenticateToken(req, res, next) {
 }
 
 //creating API route for the front end to access ALL NOT FUNDED entries from the database
-app.get("/", authenticateToken, async (request, response) => {
+app.get("/", async (request, response) => {
   //assigning the result of a find on our Model to a variable
   let notFunded = await Request.find({ isFunded: false });
   // logging all requestItems
@@ -68,7 +68,7 @@ app.get("/", authenticateToken, async (request, response) => {
 });
 
 //creating API route for the front end to access ALL FUNDED entries from the database
-app.get("/funded-requests", authenticateToken, async (request, response) => {
+app.get("/funded-requests", async (request, response) => {
   //assigning the result of a find on our Model to a variable
   let isFunded = await Request.find({ isFunded: true });
   // logging all requestItems
@@ -110,7 +110,7 @@ app.post("/", async (request, response) => {
   }
 });
 
-app.post("/edit", authenticateToken, async (request, response) => {
+app.post("/edit", async (request, response) => {
   try {
   let itemId = request.body.itemId;
   itemId = ObjectId(itemId);
@@ -149,7 +149,7 @@ app.post("/edit", authenticateToken, async (request, response) => {
   }
 });
 
-app.post("/delete", authenticateToken, async (req, res) => {
+app.post("/delete", async (req, res) => {
   try {
   let itemId = req.body.itemId;
   itemId = ObjectId(itemId);
@@ -161,7 +161,7 @@ app.post("/delete", authenticateToken, async (req, res) => {
   }
 });
 
-app.post("/unpublish", authenticateToken, async (request, response) => {
+app.post("/unpublish", async (request, response) => {
   try {
     let itemId = request.body.itemId;
     itemId = ObjectId(itemId);
@@ -201,12 +201,12 @@ app.post("/unpublish", authenticateToken, async (request, response) => {
   }
 });
 
-app.get("/unpublish", authenticateToken, async (request, response) => {
+app.get("/unpublish", async (request, response) => {
   let unpublished = await Request.find({ published: false });
   response.json(unpublished);
 });
 
-app.post("/publish", authenticateToken, async (request, response) => {
+app.post("/publish", async (request, response) => {
   try {
     let itemId = request.body.itemId;
     itemId = ObjectId(itemId);
