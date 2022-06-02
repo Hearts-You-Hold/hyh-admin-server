@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const ObjectId = require("mongodb").ObjectId;
 const cors = require("cors");
 const port = process.env.PORT || 8004;
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const app = express();
 
@@ -22,8 +23,44 @@ const { send } = require("express/lib/response");
 //model for schema instances
 const Request = mongoose.model("RequestItem", requestSchema);
 
+
+
+const publicKey = `-----BEGIN PUBLIC KEY-----
+MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA4OTh4QOlhw/qa1xbZiz+
+mEJr7mGOxkpBwYzv6BkKHrw+fYx0y+95UV9AcvblMEsQZEv+9gyW0nxWTI2GUPw7
+Lzsu4+mdcCTLb7wubMOdYwLVpRjoS1Gsky/tJswxrV2D1565F8MIYuxw1ynFSBFM
+xoSJhVaTUtUbsV9QyUb7c4mk8inE0DzZmV59PPVWXBLtaE94/OBqR1Y2I2LBDmlH
+7L6II2ZUlFRtHEmyVakqlx3PSk+JreNhSDFfJECauDCvhDGI3eew4PSjcfb6SjzU
+e0TLdL4zjt6zZuAGT1M9K87q9/x9xj8Ik+2IVxWfv5nOuSjxLMmvxl/Le9kUDVew
+feluab67GIPyMaIvPs6QkRjNvWu3FajLi3tOPges19j+AsABVt/8RweEgvvvHmAK
+r5/fRpQosrBSKHB9YBr83zPS4NhacpFQC60FtDLEe3x9nUqzoM9/+i0Y2Gq/YcJZ
+fGLdheqBugDtLC/uYzpzMjjMBUKXr4Ec65h0wYT3yrwJg6cPRSRhssJ7ahb8HbHA
+sVcLHXGxYp+Hr8YLo7l27l53tOzGnkOxweY+IcImsf9A9FboSVUIOys/WP2bep3u
+WTeq9Cihk61xYDdF+prWSeuThwM+c0ljSEYrgBbRHUzG2qgxbkQVjnvyGexy/j9B
+QjH7q20RHQ21mrav02qc24MCAwEAAQ==
+-----END PUBLIC KEY-----`;
+
+// Verify the token
+const verifiedPayload = jwt.verify(accessToken, publicKey, {
+  algorithms: ["RS256"],
+});
+
+function authenticateToken(req, res, next) {
+  // Read the JWT access token from the request header
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (token == null) return res.sendStatus(401); // Return 401 if no token
+
+  // Verify the token using the Userfront public key
+  jwt.verify(token, process.env.USERFRONT_PUBLIC_KEY, (err, auth) => {
+    if (err) return res.sendStatus(403); // Return 403 if there is an error verifying
+    req.auth = auth;
+    next();
+  });
+}
+
 //creating API route for the front end to access ALL NOT FUNDED entries from the database
-app.get("/", async (request, response) => {
+app.get("/", authenticateToken, async (request, response) => {
   //assigning the result of a find on our Model to a variable
   let notFunded = await Request.find({ isFunded: false });
   // logging all requestItems
@@ -31,7 +68,7 @@ app.get("/", async (request, response) => {
 });
 
 //creating API route for the front end to access ALL FUNDED entries from the database
-app.get("/funded-requests", async (request, response) => {
+app.get("/funded-requests", authenticateToken, async (request, response) => {
   //assigning the result of a find on our Model to a variable
   let isFunded = await Request.find({ isFunded: true });
   // logging all requestItems
@@ -73,7 +110,7 @@ app.post("/", async (request, response) => {
   }
 });
 
-app.post("/edit", async (request, response) => {
+app.post("/edit", authenticateToken, async (request, response) => {
   try {
   let itemId = request.body.itemId;
   itemId = ObjectId(itemId);
@@ -112,7 +149,7 @@ app.post("/edit", async (request, response) => {
   }
 });
 
-app.post("/delete", async (req, res) => {
+app.post("/delete", authenticateToken, async (req, res) => {
   try {
   let itemId = req.body.itemId;
   itemId = ObjectId(itemId);
@@ -124,7 +161,7 @@ app.post("/delete", async (req, res) => {
   }
 });
 
-app.post("/unpublish", async (request, response) => {
+app.post("/unpublish", authenticateToken, async (request, response) => {
   try {
     let itemId = request.body.itemId;
     itemId = ObjectId(itemId);
@@ -164,12 +201,12 @@ app.post("/unpublish", async (request, response) => {
   }
 });
 
-app.get("/unpublish", async (request, response) => {
+app.get("/unpublish", authenticateToken, async (request, response) => {
   let unpublished = await Request.find({ published: false });
   response.json(unpublished);
 });
 
-app.post("/publish", async (request, response) => {
+app.post("/publish", authenticateToken, async (request, response) => {
   try {
     let itemId = request.body.itemId;
     itemId = ObjectId(itemId);
